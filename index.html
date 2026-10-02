@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Huedoku</title>
+    <meta name="description" content="Color Sudoku. Every digit has its own paint. Daily puzzles sew themselves into a quilt." />
+    <meta name="theme-color" content="#0e1620" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f3ede2" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0e1620" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Huedoku" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png" />
+    <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
+    <!--SPLASH-->
+    <style>html{background:#0d141c}@media (prefers-color-scheme:light){html{background:#f3ede2}}#boot{place-items:center;display:grid;position:fixed;top:0;bottom:0;left:0;right:0}#boot i{opacity:.85;border-radius:50%;width:12px;height:12px;margin:0 4px;display:inline-block}</style>
+    <script>
+      // Theme before first paint: read the saved preference mirror if present.
+      try {
+        var t = localStorage.getItem('huedoku:theme-hint');
+        var dark = t ? t === 'dark' : !matchMedia('(prefers-color-scheme: light)').matches;
+        document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+      } catch (e) {}
+    </script>
+    <script type="module" crossorigin src="./assets/index-D9lNmyNa.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-BHeZ8Qz4.css">
+  </head>
+  <body>
+    <div id="boot" aria-hidden="true"><div><i style="background:#ad383c"></i><i style="background:#c9a227"></i><i style="background:#0c8876"></i><i style="background:#353da7"></i><i style="background:#b82d8b"></i></div></div>
+    <div id="app"></div>
+  </body>
+</html>
