@@ -7,9 +7,9 @@
  * - Deletes caches from older versions when it activates.
  * - Makes no network requests except for its own files.
  */
-const VERSION = '265e814af3cd';
+const VERSION = '6bd3f8fd41ff';
 const CACHE = `huedoku-${VERSION}`;
-const PRECACHE = ["./","assets/bank-v1-5fLNzB2C.json","assets/caveat-brush-400-CRLcJ5yr.woff2","assets/engine.worker-DbmB-qSZ.js","assets/fredoka-500-Blp3YfgB.woff2","assets/fredoka-600-DjqcVTek.woff2","assets/index-BHeZ8Qz4.css","assets/index-D9lNmyNa.js","assets/nunito-600-BNyLnkFZ.woff2","assets/nunito-800-Brg0d1sd.woff2"];
+const PRECACHE = ["./","assets/bank-v1-5fLNzB2C.json","assets/caveat-brush-400-CRLcJ5yr.woff2","assets/engine.worker-DbmB-qSZ.js","assets/fredoka-500-Blp3YfgB.woff2","assets/fredoka-600-DjqcVTek.woff2","assets/index-8G3zuZ7L.css","assets/index-C4BYeeJ9.js","assets/nunito-600-BNyLnkFZ.woff2","assets/nunito-800-Brg0d1sd.woff2","icons/apple-touch-icon.png","icons/favicon-32.png","icons/icon-192.png","icons/icon-512.png","icons/maskable-192.png","icons/maskable-512.png","manifest.webmanifest"];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -51,10 +51,10 @@ self.addEventListener('fetch', (event) => {
     (async () => {
       const cache = await caches.open(CACHE);
       if (req.mode === 'navigate') {
-        const shell = await cache.match('./');
+        const shell = await cache.match('./', { ignoreVary: true });
         if (shell) return shell;
       }
-      const hit = await cache.match(req, { ignoreSearch: url.pathname.endsWith('version.json') ? false : true });
+      const hit = await cache.match(req, { ignoreSearch: true, ignoreVary: true });
       if (hit) return hit;
       try {
         return await fetch(req);
