@@ -4,7 +4,10 @@
       "PowerShell(node --version)",
       "PowerShell(npm --version)",
       "PowerShell(Get-CimInstance Win32_Processor)",
-      "PowerShell(python --version)"
+      "PowerShell(python --version)",
+      "PowerShell(gh auth status)",
+      "PowerShell(Get-ChildItem -Force | Select-Object Name; Get-ChildItem scripts | Select-Object Name; Get-Content .gitignore -ErrorAction SilentlyContinue; Get-ChildItem -Recurse src -File | Where-Object { $_.FullName -notmatch 'fonts' } | Select-Object @{n='p';e={$_.FullName.Substring\\(35\\)}}, Length)",
+      "PowerShell(Get-ChildItem -Recurse src,reference,artifacts,e2e,tests,public -File | Where-Object { $_.FullName -notmatch 'fonts|node_modules' } | ForEach-Object { \"{0}`t{1}\" -f $_.FullName.Substring\\(35\\), $_.Length })"
     ]
   }
 }

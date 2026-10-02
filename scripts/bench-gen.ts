@@ -1,7 +1,7 @@
 import { generate, carve } from '../src/engine/generator';
 import { grade } from '../src/engine/logic';
 import { rngFrom } from '../src/engine/prng';
-import { randomSolution, solve } from '../src/engine/solver';
+import { randomSolution } from '../src/engine/solver';
 import { classic } from '../src/engine/variant';
 import type { Difficulty } from '../src/engine/logic/types';
 

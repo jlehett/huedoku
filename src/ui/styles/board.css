@@ -1,0 +1,251 @@
+/* ------------------------------------------------------------------ board
+   Sizes come from JS: --cell, --gap, --boxx (extra space between boxes). */
+.board {
+  --cr: calc(var(--cell) * 0.17);
+  display: grid;
+  grid-template-columns: repeat(3, var(--cell)) var(--boxx) repeat(3, var(--cell)) var(--boxx) repeat(3, var(--cell));
+  grid-template-rows: repeat(3, var(--cell)) var(--boxx) repeat(3, var(--cell)) var(--boxx) repeat(3, var(--cell));
+  gap: var(--gap);
+  touch-action: none;
+  position: relative;
+  z-index: 1;
+}
+
+.cell {
+  position: relative;
+  width: var(--cell);
+  height: var(--cell);
+  border-radius: var(--cr);
+  contain: layout style;
+}
+
+.cell > * {
+  position: absolute;
+  pointer-events: none;
+}
+
+.slot {
+  inset: 0;
+  border-radius: var(--cr);
+  background-color: var(--slot);
+  background-image: var(--grain, none);
+  box-shadow:
+    inset 0 1px 0 var(--slot-hi),
+    inset 0 -2px 4px var(--slot-shadow),
+    0 1px 1px rgba(0, 0, 0, 0.12);
+}
+.cell.peer .slot {
+  background-color: var(--slot-peer);
+}
+.cell.sel .slot {
+  background-color: var(--slot-sel);
+}
+.cell.hint .slot {
+  background-color: var(--slot-sel);
+}
+
+/* Paint reveal: a large circle centered on the cell. Effects scale it from the
+   tap point and counter-scale the paint inside so the texture stays still. */
+.clip,
+.ghost {
+  left: calc(var(--cell) * -0.92);
+  top: calc(var(--cell) * -0.92);
+  width: calc(var(--cell) * 2.84);
+  height: calc(var(--cell) * 2.84);
+  border-radius: 50%;
+  overflow: hidden;
+  opacity: 0;
+}
+.cell.filled > .clip,
+.cell.given > .clip {
+  opacity: 1;
+}
+.paint,
+.gpaint {
+  position: absolute;
+  left: calc(var(--cell) * 0.89);
+  top: calc(var(--cell) * 0.89);
+  width: calc(var(--cell) * 1.06);
+  height: calc(var(--cell) * 1.06);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+.cell.given .paint {
+  left: calc(var(--cell) * 0.92);
+  top: calc(var(--cell) * 0.92);
+  width: var(--cell);
+  height: var(--cell);
+}
+
+.num,
+.gnum {
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-num);
+  font-weight: 600;
+  font-size: calc(var(--cell) * var(--numscale, 0.6));
+  line-height: 1;
+  padding-top: 3%;
+  font-variant-numeric: tabular-nums;
+}
+.gnum {
+  opacity: 0;
+}
+:root[data-numerals='small'] { --numscale: 0.5; }
+:root[data-numerals='large'] { --numscale: 0.7; }
+
+/* Givens: matte dyed tile with a pressed-in numeral. Player entries: wet paint
+   with a soft lifted numeral. */
+.cell.given .num,
+.gnum.given {
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.28), 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+.cell.filled .num,
+.gnum:not(.given) {
+  font-weight: 500;
+  text-shadow: 0 2px 3px rgba(0, 0, 0, 0.28);
+}
+
+.cell[data-v='1'] .num, .gnum[data-v='1'] { color: var(--num-1); }
+.cell[data-v='2'] .num, .gnum[data-v='2'] { color: var(--num-2); }
+.cell[data-v='3'] .num, .gnum[data-v='3'] { color: var(--num-3); }
+.cell[data-v='4'] .num, .gnum[data-v='4'] { color: var(--num-4); }
+.cell[data-v='5'] .num, .gnum[data-v='5'] { color: var(--num-5); }
+.cell[data-v='6'] .num, .gnum[data-v='6'] { color: var(--num-6); }
+.cell[data-v='7'] .num, .gnum[data-v='7'] { color: var(--num-7); }
+.cell[data-v='8'] .num, .gnum[data-v='8'] { color: var(--num-8); }
+.cell[data-v='9'] .num, .gnum[data-v='9'] { color: var(--num-9); }
+
+/* Focus on one digit: other colors step back. */
+.cell.dim > .clip,
+.cell.dim > .num {
+  opacity: 0.5;
+}
+
+/* ------------------------------------------------------------------ notes */
+.notes {
+  inset: 5%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+}
+.notes i {
+  font-style: normal;
+  font-family: var(--font-num);
+  font-weight: 600;
+  font-size: calc(var(--cell) * 0.255);
+  line-height: 1;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  border-radius: 40%;
+}
+.notes i.on {
+  opacity: 1;
+}
+.notes i:nth-child(1) { color: var(--ink-1); }
+.notes i:nth-child(2) { color: var(--ink-2); }
+.notes i:nth-child(3) { color: var(--ink-3); }
+.notes i:nth-child(4) { color: var(--ink-4); }
+.notes i:nth-child(5) { color: var(--ink-5); }
+.notes i:nth-child(6) { color: var(--ink-6); }
+.notes i:nth-child(7) { color: var(--ink-7); }
+.notes i:nth-child(8) { color: var(--ink-8); }
+.notes i:nth-child(9) { color: var(--ink-9); }
+.notes i.focus {
+  color: var(--slot) !important;
+}
+.notes i.focus:nth-child(1) { background: var(--ink-1); }
+.notes i.focus:nth-child(2) { background: var(--ink-2); }
+.notes i.focus:nth-child(3) { background: var(--ink-3); }
+.notes i.focus:nth-child(4) { background: var(--ink-4); }
+.notes i.focus:nth-child(5) { background: var(--ink-5); }
+.notes i.focus:nth-child(6) { background: var(--ink-6); }
+.notes i.focus:nth-child(7) { background: var(--ink-7); }
+.notes i.focus:nth-child(8) { background: var(--ink-8); }
+.notes i.focus:nth-child(9) { background: var(--ink-9); }
+.notes i.elim {
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+  outline: 1.5px solid var(--danger);
+}
+/* Dots style: a colored dot in each note position. */
+.notes.dots i {
+  font-size: 0;
+}
+.notes.dots i::after {
+  content: '';
+  width: 42%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: currentColor;
+}
+.notes.dots i.focus::after {
+  background: var(--slot);
+}
+
+/* ------------------------------------------------------------------ light and rings */
+.glow {
+  inset: -6%;
+  border-radius: 34%;
+  background: radial-gradient(circle at 50% 45%, var(--glow) 0%, rgba(255, 255, 255, 0.35) 40%, rgba(255, 255, 255, 0) 72%);
+  opacity: 0;
+}
+:root[data-theme='light'] .glow {
+  background: radial-gradient(circle at 50% 45%, #fffef8 0%, rgba(255, 252, 240, 0.6) 40%, rgba(255, 255, 255, 0) 72%);
+}
+
+.ring {
+  inset: -3px;
+  border-radius: calc(var(--cr) + 3px);
+  border: 2.5px solid var(--ring);
+  opacity: 0;
+}
+.cell.sel > .ring {
+  opacity: 1;
+}
+.cell.sel[data-v='1'] > .ring { border-color: var(--glow-1); box-shadow: 0 0 10px var(--fill-1); }
+.cell.sel[data-v='2'] > .ring { border-color: var(--glow-2); box-shadow: 0 0 10px var(--fill-2); }
+.cell.sel[data-v='3'] > .ring { border-color: var(--glow-3); box-shadow: 0 0 10px var(--fill-3); }
+.cell.sel[data-v='4'] > .ring { border-color: var(--glow-4); box-shadow: 0 0 10px var(--fill-4); }
+.cell.sel[data-v='5'] > .ring { border-color: var(--glow-5); box-shadow: 0 0 10px var(--fill-5); }
+.cell.sel[data-v='6'] > .ring { border-color: var(--glow-6); box-shadow: 0 0 10px var(--fill-6); }
+.cell.sel[data-v='7'] > .ring { border-color: var(--glow-7); box-shadow: 0 0 10px var(--fill-7); }
+.cell.sel[data-v='8'] > .ring { border-color: var(--glow-8); box-shadow: 0 0 10px var(--fill-8); }
+.cell.sel[data-v='9'] > .ring { border-color: var(--glow-9); box-shadow: 0 0 10px var(--fill-9); }
+:root[data-theme='light'] .cell.sel[data-v] > .ring { border-color: var(--ring); }
+
+/* Wrong / conflicting entries: dashed ring plus a corner mark, so the cue does
+   not depend on color. */
+.cell.wrong > .ring,
+.cell.conf > .ring,
+.cell.sel.wrong[data-v] > .ring,
+.cell.sel.conf[data-v] > .ring {
+  opacity: 1;
+  border-style: dashed;
+  border-color: var(--danger);
+  box-shadow: none;
+}
+.cell.wrong > .ring::after,
+.cell.conf > .ring::after {
+  content: '';
+  position: absolute;
+  right: -5px;
+  top: -5px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--danger) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3.5 3.5l5 5M8.5 3.5l-5 5' stroke='white' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E") center/100% no-repeat;
+}
+.cell.hint-target > .ring {
+  opacity: 1;
+  border-style: dotted;
+  border-width: 3px;
+  border-color: var(--ring);
+}
+
+/* Paused: the board is hidden behind a cover. */
+.board-wrap.paused .board {
+  visibility: hidden;
+}

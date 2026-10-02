@@ -25,8 +25,9 @@ export const PALETTES: readonly PaletteDef[] = [
     blurb: 'The house paints: red through magenta.',
     names: ['red', 'orange', 'yellow', 'green', 'teal', 'blue', 'indigo', 'violet', 'magenta'],
     fills: {
-      dark: ['#ad383c', '#c8682a', '#c9a227', '#539d32', '#0c8876', '#2779c0', '#353da7', '#9666ef', '#b82d8b'],
-      light: ['#e6453f', '#f08a3c', '#f2c230', '#7cc961', '#11b19d', '#3f8fe0', '#4f57bb', '#b66aff', '#e44d94'],
+      // Deep paints with light pastel numerals (dark theme), light washes with deep numerals (light theme).
+      dark: ['#922a2d', '#b0560d', '#8b7302', '#428022', '#086557', '#1360a0', '#252376', '#7942ec', '#962374'],
+      light: ['#fc7771', '#f69f56', '#f1cf44', '#9bd36f', '#49c5b1', '#70b2f1', '#8377d4', '#dabafe', '#f066b7'],
     },
   },
   {

@@ -14,11 +14,13 @@ interface Spec {
   targets: string[];
   minNormal: number;
   minSim?: number;
+  /** Force every numeral to be light (deep paints) or dark (washes). */
+  numeral?: 'light' | 'dark';
 }
 
 const SPECS: Record<string, Spec> = {
-  'spectrum-dark': { targets: ['#b03a48', '#c8682a', '#c9a227', '#4f9a3c', '#1f8a6e', '#2f72b8', '#4b4fb5', '#7d4bb3', '#b04587'], minNormal: 22 },
-  'spectrum-light': { targets: ['#e5484d', '#f08a3c', '#f2c230', '#74c46a', '#2bb39a', '#3f8fe0', '#6563d8', '#a05ee0', '#e0559f'], minNormal: 22 },
+  'spectrum-dark': { targets: ['#8f2c3c', '#a85a1c', '#93720f', '#3f7d2a', '#1b7058', '#235a94', '#3a3f9a', '#6a3a9e', '#922f6c'], minNormal: 22, numeral: 'light' },
+  'spectrum-light': { targets: ['#f27d7e', '#f5a35a', '#f0cc48', '#97d277', '#58c6ae', '#72b1ee', '#9d9ef2', '#c59bf1', '#f087c2'], minNormal: 22, numeral: 'dark' },
   'pastel-dark': { targets: ['#f4a6ae', '#f7c098', '#f3e18f', '#b8e2a1', '#93dcc8', '#a3c9f2', '#b3b3f0', '#d2b1ee', '#f2b0d6'], minNormal: 22 },
   'pastel-light': { targets: ['#f09aa3', '#f5b98c', '#efd97a', '#acd994', '#84d3be', '#94bfee', '#a6a6ec', '#c8a3ea', '#eea3cd'], minNormal: 22 },
   'contrast-dark': { targets: ['#ff3b3b', '#ff9a1f', '#ffe14d', '#3fd13f', '#00d0b0', '#2a8cff', '#5b5bff', '#b056ff', '#ff4fc3'], minNormal: 24 },
@@ -45,7 +47,12 @@ function evaluate(spec: Spec, p: number[][]) {
   const normal = minPair(cols);
   let sim = Infinity;
   if (spec.minSim) for (const t of CVDS) sim = Math.min(sim, minPair(cols.map((c) => simulateCvd(c, t))));
-  for (const c of cols) if (numeralFor(c).ratio < 4.5) return null;
+  for (const c of cols) {
+    const n = numeralFor(c);
+    if (n.ratio < 4.5) return null;
+    if (spec.numeral === 'light' && !n.light) return null;
+    if (spec.numeral === 'dark' && n.light) return null;
+  }
   let dev = 0;
   cols.forEach((c, i) => (dev += deltaE(c, spec.targets[i]) ** 2));
   const penalty = dev + 200 * Math.max(0, spec.minNormal - normal) ** 2 + (spec.minSim ? 200 * Math.max(0, spec.minSim - sim) ** 2 : 0);
@@ -56,7 +63,19 @@ function optimize(name: string, seed: string) {
   const spec = SPECS[name];
   const rng = rngFrom(seed + name);
   const rand = (lo: number, hi: number) => lo + (hi - lo) * rng.float();
-  const start = spec.targets.map((t) => hexToOklch(t));
+  const okNumeral = (hex: string | null) => {
+    if (!hex) return false;
+    const n = numeralFor(hex);
+    return n.ratio >= 4.5 && (spec.numeral === 'light' ? n.light : spec.numeral === 'dark' ? !n.light : true);
+  };
+  const start = spec.targets.map((t) => {
+    let [L, C, h] = hexToOklch(t);
+    for (let k = 0; k < 80 && !okNumeral(oklchToHex(L, C, h)); k++) {
+      L += spec.numeral === 'light' ? -0.01 : 0.01;
+      if (!oklchToHex(L, C, h)) C *= 0.95;
+    }
+    return [L, C, h];
+  });
   let best: NonNullable<ReturnType<typeof evaluate>> | null = null;
   for (let restart = 0; restart < 12; restart++) {
     let p = start.map((x) => x.slice());
