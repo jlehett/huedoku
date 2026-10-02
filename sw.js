@@ -7,9 +7,9 @@
  * - Deletes caches from older versions when it activates.
  * - Makes no network requests except for its own files.
  */
-const VERSION = '6bd3f8fd41ff';
+const VERSION = '5af62d2e027b';
 const CACHE = `huedoku-${VERSION}`;
-const PRECACHE = ["./","assets/bank-v1-5fLNzB2C.json","assets/caveat-brush-400-CRLcJ5yr.woff2","assets/engine.worker-DbmB-qSZ.js","assets/fredoka-500-Blp3YfgB.woff2","assets/fredoka-600-DjqcVTek.woff2","assets/index-8G3zuZ7L.css","assets/index-C4BYeeJ9.js","assets/nunito-600-BNyLnkFZ.woff2","assets/nunito-800-Brg0d1sd.woff2","icons/apple-touch-icon.png","icons/favicon-32.png","icons/icon-192.png","icons/icon-512.png","icons/maskable-192.png","icons/maskable-512.png","manifest.webmanifest"];
+const PRECACHE = ["./","assets/bank-v1-5fLNzB2C.json","assets/caveat-brush-400-CRLcJ5yr.woff2","assets/engine.worker-DbmB-qSZ.js","assets/fredoka-500-Blp3YfgB.woff2","assets/fredoka-600-DjqcVTek.woff2","assets/index-CkOi7An3.css","assets/index-Cpt8BY3L.js","assets/nunito-600-BNyLnkFZ.woff2","assets/nunito-800-Brg0d1sd.woff2","icons/apple-touch-icon.png","icons/favicon-32.png","icons/icon-192.png","icons/icon-512.png","icons/maskable-192.png","icons/maskable-512.png","manifest.webmanifest"];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
